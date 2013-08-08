@@ -3,7 +3,7 @@ Use the OpenWeather API (http://openweathermap.org/api) to get the weather for a
 Reddit link: http://www.reddit.com/r/beginnerprojects/comments/1dzbu7/project_whats_the_weather/
 """
 
-import json
+import json, http.server, socketserver
 from urllib.request import urlopen
 
 def openWeather(city,countryCode,dataType="weather",units="metric"):
@@ -57,6 +57,22 @@ def openWeather(city,countryCode,dataType="weather",units="metric"):
 
 	return weather_dict
 
-weather_dict = openWeather("Melbourne","AU")
-print("Location: " + weather_dict["city_name"])
-print("Temperature: " + weather_dict["description"])
+def startServer(PORT=8082):
+	"""
+	Create webserver to serve HTML page with weather results
+	"""
+	Handler = http.server.SimpleHTTPRequestHandler
+	httpd = socketserver.TCPServer(("", PORT), Handler)
+
+	print("Webserver started on port", PORT)
+
+	# Activate webserver and continue until interrupted by ctrl+c
+	httpd.serve_forever()
+
+if __name__ == "__main__":
+	startServer()
+
+	# weather_dict = openWeather("Melbourne","AU")
+	# print("Location: " + weather_dict["city_name"])
+	# print("Description: " + weather_dict["description"])
+	# print("Temperature: ",weather_dict["temp_current"], "(Low: ",weather_dict["temp_min"], " , High: ",weather_dict["temp_max"],")")
